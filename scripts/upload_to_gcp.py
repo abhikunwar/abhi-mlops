@@ -8,7 +8,7 @@ def upload_blob(bucket_name,source_file_name,destination_blob_name):
     print(f"file:{source_file_name} uploaded successfully into bucket:{destination_blob_name}")
 
 
-upload_blob("abhi-project1-bucket-new-latest","F:\mlops-gcp-udemy\DATASET\Hotel Reservations.csv\Hotel Reservations.csv","reservation_csv_data.csv")
+upload_blob("bucket-1505","F:\mlops-gcp-udemy\DATASET\Hotel Reservations.csv\Hotel Reservations.csv","reservation_csv_data.csv")
 
 
 
