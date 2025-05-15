@@ -10,6 +10,19 @@ pipeline{
                 }
             }
         }
+        stage('creating environment and activating the environment'){
+            script{
+                echo 'creating environment and activating the environment'
+                sh '''
+                python -m venv venv
+                source venv/bin/activate
+                pip install --upgrade pip
+                pip install -e .
+                echo 'environment created and package installed'
+                pip list
+                '''
+            }
+        }
 
         }
     }
