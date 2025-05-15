@@ -1,0 +1,3 @@
+2025-05-03 13:23:52,544 - INFO - __main__- config file name is :{'data_path': {'RAW_DIR_PATH': 'artifacts/raw_dir'}}
+2025-05-03 13:23:52,544 - INFO - __main__- raw data will be stored in :artifacts/raw_dir
+2025-05-03 13:23:55,273 - INFO - __main__- raw data download from gcp completed

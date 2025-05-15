@@ -1,0 +1,15 @@
+artifact_uri: file:///f:/mlops-gcp-udemy/project1-self/notebook/mlruns/224075936256495662/89da5132a4c84cd3a7e6242aa141adf3/artifacts
+end_time: 1746153839386
+entry_point_name: ''
+experiment_id: '224075936256495662'
+lifecycle_stage: active
+run_id: 89da5132a4c84cd3a7e6242aa141adf3
+run_name: redolent-shrimp-858
+run_uuid: 89da5132a4c84cd3a7e6242aa141adf3
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1746153830958
+status: 4
+tags: []
+user_id: DELL

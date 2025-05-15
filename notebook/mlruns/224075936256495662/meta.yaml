@@ -1,0 +1,6 @@
+artifact_location: file:///f:/mlops-gcp-udemy/project1-self/notebook/mlruns/224075936256495662
+creation_time: 1746153494753
+experiment_id: '224075936256495662'
+last_update_time: 1746153494753
+lifecycle_stage: active
+name: first mlflow experiment

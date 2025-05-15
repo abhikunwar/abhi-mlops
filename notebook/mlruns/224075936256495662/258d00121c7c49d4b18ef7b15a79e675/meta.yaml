@@ -1,0 +1,15 @@
+artifact_uri: file:///f:/mlops-gcp-udemy/project1-self/notebook/mlruns/224075936256495662/258d00121c7c49d4b18ef7b15a79e675/artifacts
+end_time: 1746153810978
+entry_point_name: ''
+experiment_id: '224075936256495662'
+lifecycle_stage: active
+run_id: 258d00121c7c49d4b18ef7b15a79e675
+run_name: spiffy-tern-84
+run_uuid: 258d00121c7c49d4b18ef7b15a79e675
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1746153802607
+status: 4
+tags: []
+user_id: DELL
