@@ -1,11 +1,14 @@
 pipeline{
     agent any
+    environment{
+        GCP_PROJECT = "mlops-learning"
+    }
     stages{
         stage("cloning from github"){
             steps{
                 script{
                     echo 'cloning the github repo to jenkins'
-                    checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/abhikunwar/abhi-mlops.git']])
+                    checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'github-token', url: 'https://github.com/abhikunwar/abhi-mlops.git']])
 
                 }
             }
@@ -23,6 +26,25 @@ pipeline{
                 pip list
                 '''
             }
+            }
+        }
+        stage('creating docker image and push to the container registry'){
+            steps{
+                withCredentials([file(credentialsId: 'gcp-keys' , variable : 'GOOGLE_APPLICATION_CREDENTIALS')]){
+                    script{
+                        echo "docker  image creation and push to gcr"
+                        sh'''
+                        EXPORT PATH="$PATH:/var/jenkins_home/google-cloud-sdk/bin"
+                        gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}
+                        gcloud config set project ${GCP_PROJECT}
+                        gcloud auth configure-docker --quiet
+                        docker build -t gcr.io/${GCP_PROJECT}/ml-project:latest .
+                        docker push gcr.io/${GCP_PROJECT}/ml-project:latest 
+                        '''
+
+                    }
+                }
+                
             }
         }
 
