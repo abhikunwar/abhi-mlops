@@ -34,7 +34,7 @@ pipeline{
                     script{
                         echo "docker  image creation and push to gcr"
                         sh'''
-                        EXPORT PATH="$PATH:/var/jenkins_home/google-cloud-sdk/bin"
+                        export PATH="$PATH:/var/jenkins_home/google-cloud-sdk/bin"
                         gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}
                         gcloud config set project ${GCP_PROJECT}
                         gcloud auth configure-docker --quiet
