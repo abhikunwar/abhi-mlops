@@ -8,6 +8,7 @@ from utils.common_functions import read_yml
 
 config_yaml_file = read_yml('path_config.yaml')
 model_path = os.path.join(config_yaml_file['model_saving_path']['model_dir_path'],config_yaml_file['model_saving_path']['model_file_name'])
+print(model_path)
 
 
 app = Flask(__name__)
