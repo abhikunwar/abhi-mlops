@@ -1,7 +1,7 @@
 pipeline{
     agent any
     environment{
-        GCP_PROJECT = "mlops-learning"
+        GCP_PROJECT = "mlops-learning-458705"
     }
     stages{
         stage("cloning from github"){
