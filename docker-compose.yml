@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  trainer:
+    build:
+      context: .
+      dockerfile: Dockerfile.train
+    volumes:
+      - ./artifacts/model:/app/artifacts/model
+    command: python pipeline/model_training_pipeline.py
+
+  predictor:
+    build:
+      context: .
+      dockerfile: Dockerfile.predict
+    volumes:
+      - ./artifacts/model:/app/artifacts/model
+    ports:
+      - "8080:8080"
+    command: python pipeline/model_prediction.py
