@@ -12,15 +12,23 @@ pipeline {
       }
     }
 
-    stage('Build & Run Training') {
-      steps {
+    stage("Run Training and Save Model") {
+    steps {
         withCredentials([file(credentialsId: 'gcp-keys', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
-        sh '''
-          docker-compose build trainer
-          docker-compose run --rm trainer
-        '''
-      }
+            script {
+                echo "Setting up Python environment and running training"
+                sh '''
+                python -m venv venv
+                . venv/bin/activate
+                pip install --upgrade pip
+                pip install -e .
+
+                export GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}
+                python pipeline/model_training_pipeline.py
+                '''
+            }
+        }
     }
-  }
+}
 }
 }
