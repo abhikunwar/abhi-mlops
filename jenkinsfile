@@ -30,5 +30,24 @@ pipeline {
         }
     }
 }
+    stage('creating docker image and push to the container registry'){
+        steps{
+            withCredentials([file(credentialsId: 'gcp-keys' , variable : 'GOOGLE_APPLICATION_CREDENTIALS')]){
+                script{
+                    echo "docker  image creation and push to gcr"
+                    sh'''
+                    export PATH="$PATH:/var/jenkins_home/google-cloud-sdk/bin"
+                    gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}
+                    gcloud config set project ${GCP_PROJECT}
+                    gcloud auth configure-docker --quiet
+                    docker build -t gcr.io/${GCP_PROJECT}/ml-project:latest .
+                    docker push gcr.io/${GCP_PROJECT}/ml-project:latest 
+                    '''
+
+                }
+            }
+            
+        }
+    }
 }
 }

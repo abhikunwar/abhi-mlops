@@ -11,7 +11,7 @@ COPY requirements.txt /app/
 RUN pip install --upgrade pip && pip install -r requirements.txt
 COPY . /app/
 RUN pip install -e .
-RUN python pipeline/model_training_pipeline.py
+# RUN python pipeline/model_training_pipeline.py
 EXPOSE 8080
 
 # Run both model training and prediction in the same container
