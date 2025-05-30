@@ -3,75 +3,65 @@ pipeline {
   environment {
     GCP_PROJECT = "mlops-learning-458705"
     IMAGE_NAME = "gcr.io/${GCP_PROJECT}/ml-project-predictor:latest"
+    REMOTE_PROJECT_PATH = '/home/abhi/project-dir'
+    VM_NAME = 'model-training-vm'
+    ZONE = 'us-central1-c'
   }
-
-  stages {
-    stage('Clone Repo') {
-      steps {
-        checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'github-token', url: 'https://github.com/abhikunwar/abhi-mlops.git']])
-      }
+  stages{
+    stage('clone repo'){
+        steps{
+            checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'github-token', url: 'https://github.com/abhikunwar/abhi-mlops.git']])
+        }
     }
-
-    stage("Run Training and Save Model") {
-    steps {
-        withCredentials([file(credentialsId: 'gcp-keys', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
-            script {
-                echo "Setting up Python environment and running training"
-                sh '''
-                python -m venv venv
-                . venv/bin/activate
-                pip install --upgrade pip
-                pip install -e .
-
-                export GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}
-                python pipeline/model_training_pipeline.py
+  
+    stage("authenticate the gcp connection and service account"){
+        steps{
+            withCredentials([file(credentialsId: 'gcp-keys', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]){
+                echo "authenticating the gcp service account"
+                sh'''
+                export PATH="$PATH:/var/jenkins_home/google-cloud-sdk/bin"
+                gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}
+                gcloud config set project ${GCP_PROJECT}
+                
                 '''
             }
         }
     }
-}
-    stage('creating docker image and push to the container registry'){
-        steps{
-            withCredentials([file(credentialsId: 'gcp-keys' , variable : 'GOOGLE_APPLICATION_CREDENTIALS')]){
-                script{
-                    echo "docker  image creation and push to gcr"
-                    sh'''
-                    export PATH="$PATH:/var/jenkins_home/google-cloud-sdk/bin"
-                    gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}
-                    gcloud config set project ${GCP_PROJECT}
-                    gcloud auth configure-docker --quiet
-                    docker build -t gcr.io/${GCP_PROJECT}/ml-project:latest .
-                    docker push gcr.io/${GCP_PROJECT}/ml-project:latest 
-                    '''
 
-                }
-            }
-            
+    stage('Prepare Remote Directory') {
+        steps {
+            sh """
+            gcloud compute ssh $VM_NAME --zone=$ZONE --project=$PROJECT_ID --command="mkdir -p $REMOTE_PROJECT_PATH"
+            """
         }
-    }
-    stage('Deploy to Google Cloud Run'){
+        }
+
+    stage("copy files to VM"){
         steps{
-            withCredentials([file(credentialsId: 'gcp-keys' , variable : 'GOOGLE_APPLICATION_CREDENTIALS')]){
-                script{
-                    echo 'Deploy to Google Cloud Run.............'
-                    sh '''
-                    export PATH="$PATH:/var/jenkins_home/google-cloud-sdk/bin"
+        sh '''
+          gcloud compute scp --recurse \$WORKSPACE $VM_NAME:$REMOTE_PROJECT_PATH
+        '''
+    }
+    }
 
-
-                    gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}
-
-                    gcloud config set project ${GCP_PROJECT}
-
-                    gcloud run deploy ml-project \
-                        --image=gcr.io/${GCP_PROJECT}/ml-project:latest \
-                        --platform=managed \
-                        --region=us-central1 \
-                        --allow-unauthenticated
-                        
-                    '''
-                }
-            }
+    stage("train and build docker image then push to gcr"){
+        steps{
+            sh """
+                gcloud compute ssh $VM_NAME \
+                    --zone=$ZONE \
+                    --project=$GCP_PROJECT \
+                    --command=\"cd $REMOTE_PROJECT_PATH && \
+                            python3 -m venv venv && \
+                            . venv/bin/activate && \
+                            pip install --upgrade pip && \
+                            pip install -e . && \
+                            python pipeline/model_training_pipeline.py && \
+                            gcloud auth configure-docker -q && \
+                            docker build -t gcr.io/${GCP_PROJECT}/ml-project:latest . && \
+                            docker push gcr.io/${GCP_PROJECT}/ml-project:latest\"
+        """
         }
     }
 }
 }
+
