@@ -39,7 +39,7 @@ pipeline {
     stage("copy files to VM"){
         steps{
         sh '''
-          gcloud compute scp --recurse \$WORKSPACE $VM_NAME:$REMOTE_PROJECT_PATH
+          gcloud compute scp --recurse \$WORKSPACE $VM_NAME:$REMOTE_PROJECT_PATH --zone=us-central1-c
         '''
     }
     }
