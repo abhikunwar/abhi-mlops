@@ -3,7 +3,7 @@ pipeline {
   environment {
     GCP_PROJECT = "mlops-learning-458705"
     IMAGE_NAME = "gcr.io/${GCP_PROJECT}/ml-project-predictor:latest"
-    REMOTE_PROJECT_PATH = '/home/abhi/project-dir'
+    REMOTE_PROJECT_PATH = '~/project-dir'
     VM_NAME = 'model-training-vm'
     ZONE = 'us-central1-c'
   }
@@ -31,7 +31,7 @@ pipeline {
     stage('Prepare Remote Directory') {
         steps {
             sh """
-            gcloud compute ssh $VM_NAME --zone=$ZONE --project=$GCP_PROJECT --command="mkdir -p $REMOTE_PROJECT_PATH"
+            gcloud compute ssh --zone "us-central1-c" "model-training-vm" --project "mlops-learning-458" --command="mkdir -p $REMOTE_PROJECT_PATH"
             """
         }
         }
