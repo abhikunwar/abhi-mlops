@@ -3,7 +3,7 @@ pipeline {
   environment {
     GCP_PROJECT = "mlops-learning-458705"
     IMAGE_NAME = "gcr.io/${GCP_PROJECT}/ml-project-predictor:latest"
-    REMOTE_PROJECT_PATH = '~/project-dir'
+    REMOTE_PROJECT_PATH = '/home/DELL/project-dir'
     VM_NAME = 'model-training-vm'
     ZONE = 'us-central1-c'
   }
