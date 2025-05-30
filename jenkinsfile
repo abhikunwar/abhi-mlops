@@ -30,9 +30,9 @@ pipeline {
 
     stage('Prepare Remote Directory') {
         steps {
-            sh """
+            sh'''
             gcloud compute ssh --zone "us-central1-c" "model-training-vm" --project "mlops-learning-458705" --command="mkdir -p $REMOTE_PROJECT_PATH"
-            """
+            '''
         }
         }
 
@@ -46,7 +46,7 @@ pipeline {
 
     stage("train and build docker image then push to gcr"){
         steps{
-            sh """
+            sh'''
                 gcloud compute ssh $VM_NAME \
                     --zone=$ZONE \
                     --project=$GCP_PROJECT \
@@ -59,7 +59,7 @@ pipeline {
                             gcloud auth configure-docker -q && \
                             docker build -t gcr.io/${GCP_PROJECT}/ml-project:latest . && \
                             docker push gcr.io/${GCP_PROJECT}/ml-project:latest\"
-        """
+        '''
         }
     }
 }
