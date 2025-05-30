@@ -31,7 +31,7 @@ pipeline {
     stage('Prepare Remote Directory') {
         steps {
             sh """
-            gcloud compute ssh $VM_NAME --zone=$ZONE --project=$PROJECT_ID --command="mkdir -p $REMOTE_PROJECT_PATH"
+            gcloud compute ssh $VM_NAME --zone=$ZONE --project=$GCP_PROJECT --command="mkdir -p $REMOTE_PROJECT_PATH"
             """
         }
         }
