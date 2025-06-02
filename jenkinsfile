@@ -41,23 +41,25 @@ pipeline {
 }
 
     stage("train and build docker image then push to gcr"){
-        steps{
-            sh'''
-                gcloud compute ssh $VM_NAME \
+        steps {
+            sh """
+                gcloud compute ssh DELL@$VM_NAME \
                     --zone=$ZONE \
                     --project=$GCP_PROJECT \
-                    --command=\"cd $REMOTE_PROJECT_PATH && \
-                            python3 -m venv venv && \
-                            . venv/bin/activate && \
-                            pip install --upgrade pip && \
-                            pip install -e . && \
-                            python pipeline/model_training_pipeline.py && \
-                            gcloud auth configure-docker -q && \
-                            docker build -t gcr.io/${GCP_PROJECT}/ml-project:latest . && \
-                            docker push gcr.io/${GCP_PROJECT}/ml-project:latest\"
-        '''
-        }
+                    --command \"
+                        cd $REMOTE_PROJECT_PATH && \\
+                        python3 -m venv venv && \\
+                        . venv/bin/activate && \\
+                        pip install --upgrade pip && \\
+                        pip install -e . && \\
+                        python pipeline/model_training_pipeline.py && \\
+                        gcloud auth configure-docker -q && \\
+                        docker build -t gcr.io/$GCP_PROJECT/ml-project:latest . && \\
+                        docker push gcr.io/$GCP_PROJECT/ml-project:latest
+                    \"
+            """
     }
+}
 }
 }
 
