@@ -42,6 +42,8 @@ stage("Copy Files to VM") {
             script{
                 sh """
                     set -e
+                    gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
+                    gcloud config set project mlops-learning-458705
                     ls -la /var/jenkins_home/workspace/mlops-project1
                     tar --exclude='.git' --warning=no-file-changed -czf project.tar.gz -C "$WORKSPACE" .
                     gcloud compute scp project.tar.gz DELL@$VM_NAME:$REMOTE_PROJECT_PATH --zone=us-central1-c
