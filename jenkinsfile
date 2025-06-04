@@ -47,7 +47,7 @@ pipeline {
                     --zone=$ZONE \
                     --project=$GCP_PROJECT \
                     --command \"
-                        cd $REMOTE_PROJECT_PATH && \\
+                        cd $REMOTE_PROJECT_PATH/temp-copy && \\
                         sudo apt install -y python3 python3-venv docker.io && \\
                         
                         python3 -m venv venv && \\
