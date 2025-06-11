@@ -28,24 +28,24 @@ pipeline {
         }
     }
 
-    stage('Prepare Remote Directory') {
-    steps {
-        sh """
-            gcloud compute ssh --zone "us-central1-c" DELL@"$VM_NAME" --project "$GCP_PROJECT" --command 'set -x; mkdir -p $REMOTE_PROJECT_PATH; echo "Directory created successfully"'
-            gcloud compute ssh DELL@model-training-vm --zone=us-central1-c --command "sudo apt-get update && sudo apt-get install -y rsync"
-            mkdir -p temp-copy
-            rsync -av --exclude='.git' --exclude='venv' --exclude='__pycache__' ./ temp-copy/
-            gcloud compute scp --recurse temp-copy DELL@$VM_NAME:$REMOTE_PROJECT_PATH --zone=us-central1-c
-        """
-    }
-}
+//     stage('Prepare Remote Directory') {
+//     steps {
+//         sh """
+//             gcloud compute ssh --zone "us-central1-c" DELL@"$VM_NAME" --project "$GCP_PROJECT" --command 'set -x; mkdir -p $REMOTE_PROJECT_PATH; echo "Directory created successfully"'
+//             gcloud compute ssh DELL@model-training-vm --zone=us-central1-c --command "sudo apt-get update && sudo apt-get install -y rsync"
+//             mkdir -p temp-copy
+//             rsync -av --exclude='.git' --exclude='venv' --exclude='__pycache__' ./ temp-copy/
+//             gcloud compute scp --recurse temp-copy DELL@$VM_NAME:$REMOTE_PROJECT_PATH --zone=us-central1-c
+//         """
+//     }
+// }
 
     stage("train and build docker image then push to gcr"){
         steps {
             withCredentials([file(credentialsId: 'gcp-keys', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]){
             sh """
-                gcloud compute ssh DELL@$VM_NAME --zone=us-central1-c --project=$GCP_PROJECT --command "mkdir -p ~/tmp"
-                gcloud compute scp $GOOGLE_APPLICATION_CREDENTIALS DELL@$VM_NAME:/home/DELL/tmp/key.json --zone=us-central1-c --project=$GCP_PROJECT
+                // gcloud compute ssh DELL@$VM_NAME --zone=us-central1-c --project=$GCP_PROJECT --command "mkdir -p ~/tmp"
+                // gcloud compute scp $GOOGLE_APPLICATION_CREDENTIALS DELL@$VM_NAME:/home/DELL/tmp/key.json --zone=us-central1-c --project=$GCP_PROJECT
                 gcloud compute ssh DELL@$VM_NAME \
                     --zone=$ZONE \
                     --project=$GCP_PROJECT \
