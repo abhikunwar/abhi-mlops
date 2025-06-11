@@ -61,6 +61,8 @@ pipeline {
                         pip install --upgrade pip && \\
                         pip install -e . && \\
                         python pipeline/model_training_pipeline.py && \\
+                        sudo usermod -aG docker \$USER && \\
+                        newgrp docker || true && \\
                         sudo docker build -t gcr.io/$GCP_PROJECT/ml-project:latest . && \\
                         sudo docker push gcr.io/$GCP_PROJECT/ml-project:latest
                     \"
