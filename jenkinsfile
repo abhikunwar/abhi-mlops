@@ -44,8 +44,8 @@ pipeline {
         steps {
             withCredentials([file(credentialsId: 'gcp-keys', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]){
             sh """
-                // gcloud compute ssh DELL@$VM_NAME --zone=us-central1-c --project=$GCP_PROJECT --command "mkdir -p ~/tmp"
-                // gcloud compute scp $GOOGLE_APPLICATION_CREDENTIALS DELL@$VM_NAME:/home/DELL/tmp/key.json --zone=us-central1-c --project=$GCP_PROJECT
+                # gcloud compute ssh DELL@$VM_NAME --zone=us-central1-c --project=$GCP_PROJECT --command "mkdir -p ~/tmp"
+                # gcloud compute scp $GOOGLE_APPLICATION_CREDENTIALS DELL@$VM_NAME:/home/DELL/tmp/key.json --zone=us-central1-c --project=$GCP_PROJECT
                 gcloud compute ssh DELL@$VM_NAME \
                     --zone=$ZONE \
                     --project=$GCP_PROJECT \
