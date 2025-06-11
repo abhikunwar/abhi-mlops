@@ -44,7 +44,7 @@ pipeline {
         steps {
             withCredentials([file(credentialsId: 'gcp-keys', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]){
             sh """
-                gcloud compute scp $GOOGLE_APPLICATION_CREDENTIALS DELL@$VM_NAME:~/key.json --zone=us-central1-c --project=$GCP_PROJECT
+                gcloud compute scp $GOOGLE_APPLICATION_CREDENTIALS DELL@$VM_NAME:/home/DELL/key.json --zone=us-central1-c --project=$GCP_PROJECT
                 gcloud compute ssh DELL@$VM_NAME \
                     --zone=$ZONE \
                     --project=$GCP_PROJECT \
@@ -52,7 +52,7 @@ pipeline {
                         set -e
                         cd $REMOTE_PROJECT_PATH/temp-copy && \\
                         sudo apt install -y python3 python3-venv docker.io libgomp1 && \\
-                        gcloud auth activate-service-account --key-file=~/key.json && \\
+                        gcloud auth activate-service-account --key-file=/home/DELL/key.json && \\
                         gcloud config set project ${GCP_PROJECT} && \\
                         gcloud auth configure-docker us-central1-docker.pkg.dev,gcr.io -q && \\
                         python3 -m venv venv && \\
