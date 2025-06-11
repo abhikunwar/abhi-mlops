@@ -61,7 +61,6 @@ pipeline {
                         pip install --upgrade pip && \\
                         pip install -e . && \\
                         python pipeline/model_training_pipeline.py && \\
-                        # gcloud auth configure-docker -q && \\
                         sudo docker build -t gcr.io/$GCP_PROJECT/ml-project:latest . && \\
                         sudo docker push gcr.io/$GCP_PROJECT/ml-project:latest
                     \"
